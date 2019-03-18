@@ -1,0 +1,141 @@
+*=$0600
+begin	jsr left
+jsr right
+jsr up
+jsr down
+;jsr fire
+jsr chrset
+jsr bkgndbegin
+rts
+
+
+beginold	lda #$0e
+jsr waitkeybegin
+lda #$01
+ldx #$ff
+jsr fillbegin
+rts
+
+
+left	lda #$2c
+ldx #$00
+jsr prtchr
+inx
+lda #$25
+jsr prtchr
+inx
+lda #$26
+jsr prtchr
+lda #$34
+inx
+jsr prtchr
+lda #$0b
+jsr waitkeybegin
+jsr clr
+rts
+
+
+
+
+
+right	lda #$32
+ldx #$00
+jsr prtchr
+lda #$29
+inx
+jsr prtchr
+lda #$27
+inx
+jsr prtchr
+lda #$28
+inx
+jsr prtchr
+lda #$34
+inx
+jsr prtchr
+lda #$07
+jsr waitkeybegin
+jsr clr
+rts
+
+
+up	lda #$35
+ldx #$00
+jsr prtchr
+inx
+lda #$30
+jsr prtchr
+lda #$0e
+jsr waitkeybegin
+jsr clr
+rts
+
+
+down	lda #$24
+ldx #$00
+jsr prtchr
+lda #$2f
+inx
+jsr prtchr
+lda #$37
+inx
+jsr prtchr
+lda #$2e
+inx
+jsr prtchr
+lda #$0d
+jsr waitkeybegin
+jsr clr
+rts
+
+fire
+rts	
+
+chrset	jsr prtchr
+inx
+txa
+cmp #$00
+beq ext
+jmp chrset
+
+
+
+bkgndbegin	ldx #$00
+bkgnd	jsr waitfire
+inx
+txa
+sta $2c6
+jmp bkgnd
+
+waitkeybegin	sta $06ff
+waitkey	lda $278
+cmp $06ff
+beq ext
+jmp waitkey
+
+
+waitfire	lda $284
+cmp #$0
+beq ext
+jmp waitfire
+
+
+fillbegin	ldy #$00
+fill	sta $9c40,y
+iny
+dex
+cpx #$00
+beq ext
+jmp fill
+
+clr	lda #$00
+ldx #$05
+jsr fillbegin
+rts
+
+
+ext	rts
+
+
+prtchr	sta $9c40,x
+rts ;bkgrndcolor=2c6
